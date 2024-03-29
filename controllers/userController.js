@@ -1,4 +1,5 @@
 import userModel from "../models/userSchema.js";
+import bcrypt from 'bcrypt'
 const getUser= async (req, res)=>{
    
     try{
@@ -14,15 +15,27 @@ const getUser= async (req, res)=>{
     }
 }
 
-const addUser= async (req, res)=>{
-   
-    try{
-        const userData=req.body
-        const newUser= await userModel.create(userData)
-        res.status(201).json({ msg: "New user added", user: newUser });
+const addUser= async (req, res)=> {
+    try {
+        const { name, email, password } = req.body;
+
+        // Check if the email already exists in the database
+        const existingUser = await userModel.findOne({ email });
+        if (existingUser) {
+            return res.status(400).json({ msg: 'Email already exists' });
+        }
+
+        // Hash the password
+        const saltRounds = 10;
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+        // Create a new user with hashed password
+        const newUser = await userModel.create({name, email, password: hashedPassword });
+
+        res.status(201).json({ msg: 'New user added', user: newUser });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ msg: "Internal Server Error" });
+        res.status(500).json({ msg: 'Internal Server Error' });
     }
-}
+};
 export {addUser, getUser}
