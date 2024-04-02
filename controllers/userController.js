@@ -15,7 +15,7 @@ const getUser= async (req, res)=>{
     }
 }
 
-const addUser= async (req, res)=> {
+const signUp= async (req, res)=> {
     try {
         const { name, email, password } = req.body;
 
@@ -38,4 +38,25 @@ const addUser= async (req, res)=> {
         res.status(500).json({ msg: 'Internal Server Error' });
     }
 };
-export {addUser, getUser}
+
+const logIn= async (req, res)=>{
+    const {email, password}=req.body
+    try{
+        const user= await userModel.findOne({email})
+        if(!user){
+            return res.status(404).json({ msg: "Invalid username or password" });
+        }
+        // Compare the provided password with the hashed password stored in the database
+        const validPassword=  await bcrypt.compare(password, user.password)
+
+        if(!validPassword){
+
+            return res.status(400).json({ message: "Invalid username or password" });
+        }
+
+    }catch (error) {
+        console.error(error);
+        res.status(500).json({ msg: 'Internal Server Error' });
+    }
+}
+export {signUp, getUser, logIn}
