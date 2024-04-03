@@ -79,32 +79,92 @@ const createContent= async (req, res, next)=>{
 
 
 
-const updatePlace= async (req, res)=>{
+const updateContent= async (req, res, next)=>{
     const {title, description, image}=req.body
     const placeId=req.params.pid 
-    let place;
+    let content;
     try{
-        place= await contentModel.findById(placeId)
+      content= await contentModel.findById(placeId)
  
  
          }
          catch (error) {
             console.error(error);
-            res.status(500).json({ msg: 'Something went wrong, could not update place.' });
+            res.status(500).json({ msg: 'Something went wrong, could not update Content.' });
+            return next(error);
         }
-        place.title=title
-        place.description=description
-        place.image=image
+
+        if (content.creator.toString() !== req.userData.userId) {
+          res.status(401).json({ msg: 'You are not allowed to edit this place.' });
+          return next(error);
+        }
+        content.title=title
+        content.description=description
+        content.image=image
         try{
-            await place.save()
+            await content.save()
         } catch (error) {
             console.error(error);
-            res.status(500).json({ msg: 'Something went wrong, could not update place.' });
+            res.status(500).json({ msg: 'Something went wrong, could not update Content.' });
+            return next(error);
         }
+        res.status(200).json({ place: content.toObject({ getters: true }) });
  
     }
 
 
 
+    
+const deletContent = async (req, res, next) => {
+  const conteId = req.params.pid;
 
-export {createContent, updatePlace, getContentByUserId}
+  let conte;
+  try {
+    conte = await contentModel.findById(conteId).populate('creator');
+  }catch (error) {
+    console.error(error);
+    res.status(500).json({ msg: 'Something went wrong, could not delete Content.' });
+    return next(error);
+} 
+
+  if (!conte) {
+    const error = new Error('Could not find place for this id.', 404);
+    return next(error);
+  }
+
+  if (conte.creator.id !== req.userData.userId) {
+    const error = new Error(
+      'You are not allowed to delete this Content.',
+      401
+    );
+    return next(error);
+  }
+
+  //const imagePath = place.image;
+
+  try {
+    const sess = await mongoose.startSession();
+    sess.startTransaction();
+    await conte.remove({ session: sess });
+    conte.creator.content.pull(conte);
+    await conte.creator.save({ session: sess });
+    await sess.commitTransaction();
+  } catch (err) {
+    const error = new Error(
+      'Something went wrong, could not delete Content.',
+      500
+    );
+    return next(error);
+  }
+
+//  fs.unlink(imagePath, err => {
+  //  console.log(err);
+ // });
+
+  res.status(200).json({ message: 'Deleted Content.' });
+};
+
+
+
+
+export {createContent, updateContent, getContentByUserId , deletContent}
