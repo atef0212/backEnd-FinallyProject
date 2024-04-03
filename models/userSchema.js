@@ -1,5 +1,5 @@
 import mongoose from "mongoose"
-const genders = ['male', 'female', 'other'];
+//const genders = ['male', 'female', 'other'];
 const userSch= new mongoose.Schema({
     name: { type: String, required: true },
     // gender: {
@@ -9,7 +9,9 @@ const userSch= new mongoose.Schema({
     // },
     email: { type: String, required: true, unique: true },
   password: { type: String, required: true, minlength: 6 },
-  //  image: { type: String, required: true },
+
+  content:[{type: mongoose.Types.ObjectId, required:true, ref: "content"}]
+
 
 })
  const userModel=mongoose.model("user", userSch)
