@@ -16,9 +16,40 @@ const getUser = async (req, res) => {
     }
 };
 
+
+const updateUserData = async (req, res, next) => {
+    const { old, tall, land, gender } = req.body;
+    const userIdToUpdate = req.params.uid;
+
+    try {
+        const existingUser = await userModel.findById(userIdToUpdate);
+
+        if (!existingUser) {
+            return res.status(404).json({ msg: "User not found" });
+        }
+
+        // Update user data
+        existingUser.old = old;
+        existingUser.tall = tall;
+        existingUser.land = land;
+        existingUser.gender = gender;
+
+        // Save the updated user data
+        await existingUser.save();
+
+        // Send response
+        res.status(200).json({ msg: "User data updated successfully" });
+    } catch (error) {
+        // Handle errors
+        console.error("Error updating user data:", error);
+        res.status(500).json({ msg: "Internal Server Error" });
+        next(error);
+    }
+};
+
 const signUp = async (req, res) => {
     try {
-        const { name, email, password } = req.body;
+        const { name,old, tall, land, gender, email, password } = req.body;
 
         // Check if the email already exists in the database
         const existingUser = await userModel.findOne({ email });
@@ -32,6 +63,7 @@ const signUp = async (req, res) => {
 
         // Create a new user with hashed password
         const newUser = await userModel.create({
+            old, tall, land, gender,
             name,
             email,
             password: hashedPassword,
@@ -85,4 +117,27 @@ const logIn = async (req, res) => {
     }
 };
 
-export { signUp, getUser, logIn };
+const deleteUser = async (req, res, next) => {
+    const userIdDelete = req.params.uid;
+
+    try {
+        const existingUser = await userModel.findById(userIdDelete);
+
+        if (!existingUser) {
+            const error = new Error("User not found");
+            error.status = 404;
+            throw error;
+        }
+
+        await existingUser.deleteOne();
+
+ 
+        res.status(200).json({ msg: "User data deleted successfully" });
+    } catch (error) {
+        // Pass the error to the next middleware
+        next(error);
+    }
+};
+
+
+export { signUp, getUser, logIn, updateUserData, deleteUser };

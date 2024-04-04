@@ -1,10 +1,20 @@
 import { check, validationResult } from "express-validator";
 const useValidator=[
-    [check("email").isEmail().isLength({min:5})],
-    [check("name").isString().isAlphanumeric().isLength({min:4})],
-    [check("password").escape().isLength({min:8})]
+  check("email").isEmail().withMessage("Invalid email format").isLength({ min: 5 }).withMessage("Email must be at least 5 characters long"),
+  check("name").isString().withMessage("Name must be a string").isLength({ min: 4 }).withMessage("Name must be at least 4 characters long"),
+  check("password").isLength({ min: 8 }).withMessage("Password must be at least 8 characters long"),
+  check("old").isNumeric().withMessage("Age must be a number").isInt({ min: 1, max: 99 }).withMessage("Age must be between 1 and 99"),
+  check("tall").optional().isNumeric().withMessage("Height must be a number"),
 
 ]
+const useValidatorContent=[
+  check('title').notEmpty().withMessage('Title is required'),
+  check('description').notEmpty().withMessage('Description is required'),
+  check('image').notEmpty().isURL()
+
+
+]
+
 
 
 const validate = (req, res, next) => {
@@ -17,4 +27,4 @@ const validate = (req, res, next) => {
 
   };
 
-  export {validate, useValidator}
+  export {validate, useValidator, useValidatorContent}
