@@ -6,7 +6,7 @@ import { getUser, signUp, logIn, updateUserData, deleteUser } from '../controlle
  useRouter.put("/:uid", updateUserData)
  useRouter.delete("/:uid", deleteUser)
  useRouter.post("/signup",useValidator, validate,   signUp)
- useRouter.post("/logIn",useValidator, validate,   logIn)
+ useRouter.post("/login",useValidator, validate,   logIn)
 
  export default useRouter
 

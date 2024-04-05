@@ -100,7 +100,7 @@ const logIn = async (req, res) => {
             return res.status(401).json({ msg: "Invalid username or password" });
         }
 
-        // If login is successful, generate JWT token
+        // If logIn is successful, generate JWT token
         const token = jwt.sign(
             {
                 userId: user.id,
