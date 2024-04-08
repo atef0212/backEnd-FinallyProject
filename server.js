@@ -3,9 +3,13 @@ import bodyParser from "body-parser"
 import useRouter from "./routes/user-Router.js";
 import contenRoutes from "./routes/contect-routes.js";
 import { connectToDatabase } from "./db-connection.js";
-import cors from 'cors'
+
+
+
 const app = express();
 const port = 4000;
+
+
 
 app.use(express.json())
 app.use(bodyParser.json())
@@ -22,7 +26,11 @@ app.use((req, res, next) => {
 
   next();
 });
+
+
 connectToDatabase();
+
+
 
 app.use("/api/content", contenRoutes)
 app.use("/api/user", useRouter)

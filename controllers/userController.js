@@ -2,6 +2,8 @@ import userModel from "../models/userSchema.js";
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
+
+
 const getUser = async (req, res) => {
     try {
         let users = await userModel.find();
@@ -15,6 +17,8 @@ const getUser = async (req, res) => {
         res.status(500).json({ msg: "Internal Server Error" });
     }
 };
+
+
 
 
 const updateUserData = async (req, res, next) => {
@@ -47,10 +51,15 @@ const updateUserData = async (req, res, next) => {
     }
 };
 
+
+
+
+
 const signUp = async (req, res) => {
+    console.log("afs")
     try {
         const { name,old, tall, land, gender, email, password } = req.body;
-
+        console.log("aa"+req.body)
         // Check if the email already exists in the database
         const existingUser = await userModel.findOne({ email });
         if (existingUser) {
@@ -81,10 +90,13 @@ const signUp = async (req, res) => {
 
         res.status(201).json({ msg: "New user added", user: newUser, token });
     } catch (error) {
-        console.error(error);
+        console.log(error);
         res.status(500).json({ msg: "Internal Server Error" });
     }
 };
+
+
+
 
 const logIn = async (req, res) => {
     const { email, password } = req.body;
@@ -117,6 +129,9 @@ const logIn = async (req, res) => {
     }
 };
 
+
+
+
 const deleteUser = async (req, res, next) => {
     const userIdDelete = req.params.uid;
 
@@ -138,6 +153,9 @@ const deleteUser = async (req, res, next) => {
         next(error);
     }
 };
+
+
+
 
 
 export { signUp, getUser, logIn, updateUserData, deleteUser };
