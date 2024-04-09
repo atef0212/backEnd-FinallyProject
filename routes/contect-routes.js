@@ -9,9 +9,12 @@ import { checkAuth } from "../maddleWare/check-auth.js";
 import express, { Router } from "express";
 
 
-
-
 const contenRoutes = express.Router();
+
+
+ //ContentsEndPoint
+
+
 contenRoutes.get("/user/:uid", getContentByUserId);
 contenRoutes.use(checkAuth);
 contenRoutes.delete("/pid", deletContent)

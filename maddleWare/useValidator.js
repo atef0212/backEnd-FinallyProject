@@ -19,7 +19,7 @@ const useValidatorContent=[
 
 const logInValidator= [
   check("email").isEmail().withMessage("Invalid email format").isLength({ min: 5 }).withMessage("Email must be at least 5 characters long"),
-  check("password").isLength({ min: 8 }).withMessage("Password must be at least 8 characters long"),
+  check("password").isLength({ min: 5 })
 
 
 ]
