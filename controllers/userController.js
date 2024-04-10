@@ -56,10 +56,10 @@ const updateUserData = async (req, res, next) => {
 
 
 const signUp = async (req, res) => {
-    console.log("afs")
+
     try {
         const { name,old, tall, land, gender, email, password } = req.body;
-        console.log("aa"+req.body)
+      
         // Check if the email already exists in the database
         const existingUser = await userModel.findOne({ email });
         if (existingUser) {
@@ -132,6 +132,27 @@ const logIn = async (req, res) => {
 
 
 
+const logOut = async (req, res) => {
+    try {
+        // Extract the token from the request headers
+        const token = req.headers.authorization.split(' ')[1];
+
+        // Assuming you have a secret key used for signing JWT tokens
+        const secretKey = 'secretKey';
+
+        // Decode the token to verify its validity
+        const decoded = jwt.verify(token, secretKey);
+
+
+        // Respond with a success message
+        res.status(200).json({ message: "Logout successful" });
+    } catch (error) {
+        // If token verification fails, or any other error occurs
+        res.status(500).json({ message: error.message });
+    }
+}
+
+
 const deleteUser = async (req, res, next) => {
     const userIdDelete = req.params.uid;
 
@@ -158,4 +179,4 @@ const deleteUser = async (req, res, next) => {
 
 
 
-export { signUp, getUser, logIn, updateUserData, deleteUser };
+export { signUp, getUser, logIn, updateUserData, deleteUser, logOut };

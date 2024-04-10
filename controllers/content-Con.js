@@ -2,6 +2,8 @@
 import contentModel from "../models/contecnt-Schema.js";
 import userModel from "../models/userSchema.js";
 
+
+
 // Function to get content by user ID
 const getContentByUserId = async (req, res) => {
     const userId = req.params.uid;
@@ -25,6 +27,9 @@ const getContentByUserId = async (req, res) => {
         res.status(500).json({ msg: 'Fetching Content failed, please try again later.' });
     }
 };
+
+
+
 
 // Function to create new content
 const createContent = async (req, res, next) => {
@@ -68,6 +73,10 @@ const createContent = async (req, res, next) => {
     }
 };
 
+
+
+
+
 // Function to update existing content
 const updateContent = async (req, res, next) => {
     const { title, description, image } = req.body;
@@ -105,6 +114,10 @@ const updateContent = async (req, res, next) => {
         return next(error);
     }
 };
+
+
+
+
 
 // Function to delete content
 const deletContent = async (req, res, next) => {
@@ -146,6 +159,10 @@ const deletContent = async (req, res, next) => {
         return next(error);
     }
 };
+
+
+
+
 
 // Export functions
 export { createContent, updateContent, getContentByUserId, deletContent };
