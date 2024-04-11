@@ -133,7 +133,7 @@ const logIn = async (req, res) => {
 const logOut = async (req, res) => {
   try {
     // Respond with a success message
-    res.status(200).json({ message: "Logout successful" });
+    res.clearCookie("token").status(200).json({ message: "logout successful" });
   } catch (error) {
     // If token verification fails, or any other error occurs
     res.status(500).json({ message: error.message });
