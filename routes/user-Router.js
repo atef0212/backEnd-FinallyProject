@@ -5,7 +5,7 @@ import { getUser, signUp, logIn, updateUserData, deleteUser, logOut } from '../c
 
 
 //usersEndPoint
- useRouter.get("/", getUser)
+ useRouter.get("/:uid", getUser)
  useRouter.put("/:uid", updateUserData)
  useRouter.delete("/:uid", deleteUser)
  useRouter.post("/signup",useValidator, validate,   signUp)

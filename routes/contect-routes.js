@@ -6,7 +6,7 @@ import {
 
 import { useValidatorContent, validate } from "../maddleWare/useValidator.js";
 import { checkAuth } from "../maddleWare/check-auth.js";
-import express, { Router } from "express";
+import express from "express";
 
 
 const contenRoutes = express.Router();
@@ -15,10 +15,10 @@ const contenRoutes = express.Router();
  //ContentsEndPoint
 
 
-contenRoutes.get("/user/:uid", getContentByUserId);
+contenRoutes.get("/:uid", getContentByUserId);
 contenRoutes.use(checkAuth);
-contenRoutes.delete("/pid", deletContent)
-contenRoutes.put("/:pid", updateContent);
+contenRoutes.delete("/cid", deletContent)
+contenRoutes.put("/:cid", updateContent);
 contenRoutes.post("/",useValidatorContent,validate, createContent);
 
 

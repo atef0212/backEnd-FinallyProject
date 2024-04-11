@@ -19,7 +19,7 @@ const getContentByUserId = async (req, res) => {
         
         // If content found, return content
         res.json({
-            content: userContent.content.map(place => place.toObject({ getters: true }))
+            content: userContent.content.map(user => user.toObject({ getters: true }))
         });
     } catch (error) {
         // If any error occurs, handle it and return error response
