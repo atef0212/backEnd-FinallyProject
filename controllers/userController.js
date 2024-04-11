@@ -38,9 +38,19 @@ const updateUserData = async (req, res, next) => {
 
     // Save the updated user data
     await existingUser.save();
-
+    const payload = {
+        userId: user.id,
+      };
+      const token = jwt.sign(payload, "secretKey", { expiresIn: "1h" });
+  
+      res
+        .cookie("token", token, {
+          httpOnly: true,
+        })
+        .status(200)
+        .json({ message: "login successfully", user });
     // Send response
-    res.status(200).json({ msg: "User data updated successfully" });
+   // res.status(200).json({ msg: "User data updated successfully" });
   } catch (error) {
     // Handle errors
     console.error("Error updating user data:", error);
