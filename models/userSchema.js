@@ -5,15 +5,16 @@ const genders = ['male', 'female', 'other'];
 
 
 const userSch= new mongoose.Schema({
-    name: { type: String, required: true },
-    age: { type: Number, required: true , min: 1, max: 99},
+    name: { type: String,  },
+    age: { type: Number , min: 1, max: 99},
     tall: { type: Number, min: 1 },
-   land: { type: String, required: true },
+   land: { type: String },
     gender: {
        type: String,
-       enum: genders,
-   required: true,
+       enum: genders
  },
+ //image: { type: String, required: true },
+
     email: { type: String, required: true, unique: true },
   password: { type: String, required: true, minlength: 6 },
 

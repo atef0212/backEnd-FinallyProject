@@ -2,12 +2,28 @@ import userModel from "../models/userSchema.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-const getUser = async (req, res) => {
-  const { name, age, land, gender } = req.body;
-  const showUserData = req.params.uid;
+const getUsers = async (req, res, next) => {
+  let users;
   try {
-    let users = await userModel.find(showUserData);
-    if (users.length < 1) {
+    users = await userModel.find(users);
+  } catch (err) {
+    console.log(err,
+      'Fetching users failed, please try again later.',
+      500
+    );
+    return next(error);
+  }
+  res.json({ users: users.map(user => user.toObject({ getters: true })) });
+};
+
+
+const getUser = async (req, res) => {
+
+  const {uid} = req.params
+  try {
+    let users = await userModel.findById(uid);
+    console.log(users)
+    if (!users) {
       res.status(404).json({ msg: "No users found" });
     } else {
       res.status(200).json({ users });
@@ -18,8 +34,13 @@ const getUser = async (req, res) => {
   }
 };
 
+
+
+
+
 const updateUserData = async (req, res, next) => {
   const { password, land, gender, tall, age } = req.body;
+  console.log(req.body)
   const userIdToUpdate = req.params.uid;
 
   try {
@@ -38,7 +59,7 @@ const updateUserData = async (req, res, next) => {
 
     // Save the updated user data
     await existingUser.save();
-
+    
     // Send response
     res.status(200).json({ msg: "User data updated successfully" });
   } catch (error) {
@@ -48,6 +69,11 @@ const updateUserData = async (req, res, next) => {
     next(error);
   }
 };
+
+
+
+
+
 
 const signUp = async (req, res) => {
   try {
@@ -75,6 +101,23 @@ const signUp = async (req, res) => {
     });
 
     // Generate JWT token
+/*
+    let token;
+    try {
+      token = jwt.sign(
+        { userId: newUser.id, email: newUser.email },
+        'secretKey',
+        { expiresIn: '1h' }
+      );
+    } catch (error) {
+      console.log( error,
+        'Signing up failed, please try again later.',
+        500
+      );
+      return next();
+    }
+
+    
     const token = jwt.sign(
       {
         userId: newUser.id,
@@ -90,13 +133,20 @@ const signUp = async (req, res) => {
       })
       .status(200)
       .json({ message: "login successfully", user });
+*/
 
-    //   res.status(201).json({ msg: "New user added", user: newUser, token });
+  res.status(201).json({ msg: "New user added", newUser:newUser });
   } catch (error) {
     console.log(error);
     res.status(500).json({ msg: "Internal Server Error" });
   }
 };
+
+
+
+
+
+
 
 const logIn = async (req, res) => {
   const { email, password } = req.body;
@@ -115,6 +165,7 @@ const logIn = async (req, res) => {
     // If logIn is successful, generate JWT token
     const payload = {
       userId: user.id,
+
     };
     const token = jwt.sign(payload, "secretKey", { expiresIn: "1h" });
 
@@ -130,6 +181,12 @@ const logIn = async (req, res) => {
   }
 };
 
+
+
+
+
+
+
 const logOut = async (req, res) => {
   try {
     // Respond with a success message
@@ -140,11 +197,16 @@ const logOut = async (req, res) => {
   }
 };
 
+
+
+
+
+
 const deleteUser = async (req, res, next) => {
-  const userIdDelete = req.params.uid;
+  const userId = req.params.uid;
 
   try {
-    const existingUser = await userModel.findById(userIdDelete);
+    const existingUser = await userModel.findById(userId);
 
     if (!existingUser) {
       const error = new Error("User not found");
@@ -161,4 +223,9 @@ const deleteUser = async (req, res, next) => {
   }
 };
 
-export { signUp, getUser, logIn, updateUserData, deleteUser, logOut };
+
+
+
+
+
+export { signUp, getUser, logIn, updateUserData, deleteUser, logOut, getUsers };
